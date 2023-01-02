@@ -1,0 +1,13 @@
+{
+  "id": "cd4b2704-bd92-405e-a526-39b740e90008",
+  "title": "sometitle",
+  "description": "this is my description",
+  "startDate": "2023-01-01",
+  "endDate": "2023-01-10",
+  "type": "CONFERENCE",
+  "tags": [
+    "apple",
+    "banana"
+  ],
+  "url": "www.google.com"
+}
