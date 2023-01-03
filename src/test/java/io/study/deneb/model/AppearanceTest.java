@@ -1,6 +1,5 @@
 package io.study.deneb.model;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +11,11 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
 class AppearanceTest {
@@ -28,6 +25,9 @@ class AppearanceTest {
 
   @Autowired
   JacksonTester<Appearance> jacksonTester;
+
+  @Autowired
+  JacksonTester<List<Appearance>> jacksonListTester;
 
 
   @BeforeEach
@@ -84,6 +84,38 @@ class AppearanceTest {
     JsonContent<Appearance> json = jacksonTester.write(appearance);
 
     assertThat(json).isEqualToJson(new ClassPathResource("appearance.json"));
+
+  }
+
+  @Test
+  void serializationListJsonTestWithJsonPath() throws IOException {
+    var appearance = new Appearance(
+      "cd4b2704-bd92-405e-a526-39b740e90010",
+      "json data 1",
+      "this is my description",
+      LocalDate.of(2023, 1, 1),
+      LocalDate.of(2023, 1, 10),
+      Type.CONFERENCE,
+      List.of("apple", "banana"),
+      "www.google.com"
+    );
+
+    var appearance2 = new Appearance(
+      "cd4b2704-bd92-405e-a526-39b740e90010",
+      "json data 2",
+      "hello everyone",
+      LocalDate.of(2023, 1, 11),
+      LocalDate.of(2023, 1, 20),
+      Type.CONFERENCE,
+      List.of("strawberry", "kiwi"),
+      "www.naver.com"
+    );
+
+    List<Appearance> appearances = List.of(appearance, appearance2);
+
+    JsonContent<List<Appearance>> json = jacksonListTester.write(appearances);
+
+    assertThat(json).extractingJsonPathValue("$.length()").isEqualTo(appearances.size());
 
   }
 
